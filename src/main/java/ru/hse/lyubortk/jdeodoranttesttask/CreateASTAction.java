@@ -73,7 +73,7 @@ public class CreateASTAction extends AnAction {
 
         final Node astRootNode = parseJavaCode(document, primaryCaret);
         if (astRootNode == null) {
-            sendNotification();
+            sendNotification(project);
             return;
         }
 
@@ -168,12 +168,12 @@ public class CreateASTAction extends AnAction {
         return parseNode.getClass().getSimpleName() + ":      '" + parseNode.toString() + "'";
     }
 
-    static private void sendNotification() {
+    static private void sendNotification(@Nullable Project project) {
         Notifications.Bus.notify(new Notification(
                 NOTIFICATION_GROUP_DISPLAY_ID,
                 NOTIFICATION_TITLE,
                 NOTIFICATION_CONTENT,
                 NotificationType.ERROR
-        ));
+        ), project);
     }
 }

@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler;
 import com.intellij.openapi.editor.actionSystem.EditorActionManager;
 import com.intellij.openapi.editor.actionSystem.EditorTextInsertHandler;
+import com.intellij.openapi.project.Project;
 import com.intellij.util.Producer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +58,7 @@ public class PasteActionHandlerWithNotifications extends EditorActionHandler imp
         if (originalHandler != null) {
             originalHandler.execute(editor, caret, dataContext);
         }
-        sendNotification();
+        sendNotification(editor.getProject());
     }
 
     @Override
@@ -65,15 +66,15 @@ public class PasteActionHandlerWithNotifications extends EditorActionHandler imp
         if (originalHandler != null && originalHandler instanceof EditorTextInsertHandler) {
             ((EditorTextInsertHandler)originalHandler).execute(editor, dataContext, producer);
         }
-        sendNotification();
+        sendNotification(editor.getProject());
     }
 
-    static private void sendNotification() {
+    static private void sendNotification(@Nullable Project project) {
         Notifications.Bus.notify(new Notification(
                 NOTIFICATION_GROUP_DISPLAY_ID,
                 NOTIFICATION_TITLE,
                 NOTIFICATION_CONTENT,
                 NotificationType.INFORMATION
-        ));
+        ), project);
     }
 }
