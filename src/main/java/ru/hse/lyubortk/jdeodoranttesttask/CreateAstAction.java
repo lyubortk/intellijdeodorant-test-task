@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Menu action which constructs an abstract syntax tree from a selection of characters.
  */
-public class CreateASTAction extends AnAction {
+public class CreateAstAction extends AnAction {
     static final String NOTIFICATION_GROUP_DISPLAY_ID = "JDeodorant test task";
 
     private static final String NOTIFICATION_TITLE = "AST building error";
@@ -54,7 +54,9 @@ public class CreateASTAction extends AnAction {
     /*
      * Registers PasteActionHandlerWithNotifications handler.
      * Action classes are guaranteed to be loaded into jvm and therefore their static initialization
-     * section could be used to register handlers.
+     * section could be used to register handlers. (This way of registering handlers in unrelated
+     * classes' static initialization sections may seem strange but still it is presented in the
+     * official Intellij Platform SDK DevGuide).
      */
     static {
         PasteActionHandlerWithNotifications.registerHandler();
@@ -108,14 +110,14 @@ public class CreateASTAction extends AnAction {
         final JavaParser parser = new JavaParser();
         for (ParseStart<? extends Node> parseStart : PARSE_OPTIONS) {
             final String textToParse = parseStart.equals(ParseStart.BLOCK)
-                    ? "{" + selectedText + "}"
+                    ? createArtificialCodeBlock(selectedText)
                     : selectedText;
 
             ParseResult<? extends Node> result =
                     parser.parse(parseStart, Providers.provider(textToParse));
 
-            if (result.isSuccessful()) {
-                astRootNode = result.getResult().get(); // result is always present in this case
+            if (result.isSuccessful() && result.getResult().isPresent()) {
+                astRootNode = result.getResult().get();
                 break;
             }
         }
@@ -124,9 +126,11 @@ public class CreateASTAction extends AnAction {
         if (astRootNode == null) {
             ParseResult<? extends Node> result = parser.parse(
                     ParseStart.CLASS_BODY,
-                    Providers.provider("class FakeClass {\n" + selectedText + "\n}")
+                    Providers.provider(createArtificialClass(selectedText))
             );
-            astRootNode = result.getResult().orElse(null);
+            if (result.isSuccessful() && result.getResult().isPresent()) {
+                astRootNode = result.getResult().get();
+            }
         }
         return astRootNode;
     }
@@ -156,7 +160,18 @@ public class CreateASTAction extends AnAction {
         windowContentManager.addContent(content);
     }
 
-    private DefaultMutableTreeNode constructTreeNode(@NotNull Node parseNode) {
+    @NotNull
+    private static String createArtificialCodeBlock(@NotNull String selectedText) {
+        return "{" + selectedText + "}";
+    }
+
+    @NotNull
+    private static String createArtificialClass(@NotNull String selectedText) {
+        return "class FakeClass {\n" + selectedText + "\n}";
+    }
+
+    @NotNull
+    private static DefaultMutableTreeNode constructTreeNode(@NotNull Node parseNode) {
         final DefaultMutableTreeNode root = new DefaultMutableTreeNode(getNodeMessage(parseNode));
         for (Node child : parseNode.getChildNodes()) {
             root.add(constructTreeNode(child));
@@ -164,11 +179,12 @@ public class CreateASTAction extends AnAction {
         return root;
     }
 
-    private String getNodeMessage(@NotNull Node parseNode) {
+    @NotNull
+    private static String getNodeMessage(@NotNull Node parseNode) {
         return parseNode.getClass().getSimpleName() + ":      '" + parseNode.toString() + "'";
     }
 
-    static private void sendNotification(@Nullable Project project) {
+    private static void sendNotification(@Nullable Project project) {
         Notifications.Bus.notify(new Notification(
                 NOTIFICATION_GROUP_DISPLAY_ID,
                 NOTIFICATION_TITLE,

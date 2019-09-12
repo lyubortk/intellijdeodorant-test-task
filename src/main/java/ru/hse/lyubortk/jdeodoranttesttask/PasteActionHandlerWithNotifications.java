@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.datatransfer.Transferable;
 
-import static ru.hse.lyubortk.jdeodoranttesttask.CreateASTAction.NOTIFICATION_GROUP_DISPLAY_ID;
+import static ru.hse.lyubortk.jdeodoranttesttask.CreateAstAction.NOTIFICATION_GROUP_DISPLAY_ID;
 
 /**
  * This class is an implementation of EditorActionHandler and EditorTextInsertHandler which
@@ -69,7 +69,7 @@ public class PasteActionHandlerWithNotifications extends EditorActionHandler imp
         sendNotification(editor.getProject());
     }
 
-    static private void sendNotification(@Nullable Project project) {
+    private static void sendNotification(@Nullable Project project) {
         Notifications.Bus.notify(new Notification(
                 NOTIFICATION_GROUP_DISPLAY_ID,
                 NOTIFICATION_TITLE,

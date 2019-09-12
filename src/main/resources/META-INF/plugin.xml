@@ -1,29 +1,24 @@
 <idea-plugin>
     <id>ru.hse.lyubortk.jdeodoranttesttask</id>
-    <name>JDeodorant Test Task</name>
-    <vendor email="lyubortk@gmail.com" url="https://github.com">Konstantin Lyubort</vendor>
+    <name>IntelliJDeodorant Test Task</name>
+    <vendor email="lyubortk@gmail.com" url="https://github.com/lyubortk/intellijdeodorant-test-task">
+        Konstantin Lyubort
+    </vendor>
 
     <description><![CDATA[
-    This is a test task solution for JDeodorant project internship
+    This is a test task solution for IntelliJDeodorant project internship
     ]]></description>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
-    <depends>com.intellij.modules.lang</depends>
-    -->
-
-
     <actions>
-        <group id="JDeodorantTestTask" text="JDeodorant Test Task" description="JDeodorant Test Task">
+        <group id="IntelliJDeodorantTestTask" text="IntelliJDeodorant Test" description="IntelliJDeodorant Test Task">
             <add-to-group group-id="MainMenu" anchor="last"/>
         </group>
         <action id="JDeodorantTestTask.CreateAstAction"
-                class="ru.hse.lyubortk.jdeodoranttesttask.CreateASTAction"
+                class="ru.hse.lyubortk.jdeodoranttesttask.CreateAstAction"
                 text="Build AST"
                 description="Generates AST and outputs it on a new tab in AST tool window">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-            <add-to-group group-id="JDeodorantTestTask" anchor="last"/>
+            <add-to-group group-id="IntelliJDeodorantTestTask" anchor="last"/>
         </action>
     </actions>
 </idea-plugin>
