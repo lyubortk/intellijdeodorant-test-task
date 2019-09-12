@@ -81,7 +81,7 @@ public class CreateASTAction extends AnAction {
     }
 
     /**
-     * Sets visibility and enables menu item if all conditions are met:
+     * Enables menu item if all conditions are met:
      *   A project is open,
      *   An editor is active,
      *   Some characters are selected
