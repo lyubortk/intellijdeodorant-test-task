@@ -29,26 +29,8 @@ public class PasteActionHandlerWithNotifications extends EditorActionHandler imp
 
     private final EditorActionHandler originalHandler;
 
-    private PasteActionHandlerWithNotifications(@Nullable EditorActionHandler originalHandler) {
+    public PasteActionHandlerWithNotifications(@Nullable EditorActionHandler originalHandler) {
         this.originalHandler = originalHandler;
-    }
-
-    /**
-     * Registers handler for ACTION_EDITOR_PASTE and ACTION_EDITOR_PASTE_SIMPLE.
-     */
-    public static void registerHandler() {
-        final EditorActionManager actionManager = EditorActionManager.getInstance();
-        registerHandler(actionManager, IdeActions.ACTION_EDITOR_PASTE);
-        registerHandler(actionManager, IdeActions.ACTION_EDITOR_PASTE_SIMPLE);
-    }
-
-    private static void registerHandler(@NotNull EditorActionManager actionManager,
-                                        @NotNull String ideAction) {
-        final EditorActionHandler originalHandler = actionManager.getActionHandler(ideAction);
-        actionManager.setActionHandler(
-                ideAction,
-                new PasteActionHandlerWithNotifications(originalHandler)
-        );
     }
 
     @Override

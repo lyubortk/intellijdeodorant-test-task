@@ -21,4 +21,17 @@
             <add-to-group group-id="IntelliJDeodorantTestTask" anchor="last"/>
         </action>
     </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <editorActionHandler
+                action="EditorPaste"
+                order="first"
+                implementationClass="ru.hse.lyubortk.jdeodoranttesttask.PasteActionHandlerWithNotifications"
+        />
+        <editorActionHandler
+                action="EditorPasteSimple"
+                order="first"
+                implementationClass="ru.hse.lyubortk.jdeodoranttesttask.PasteActionHandlerWithNotifications"
+        />
+    </extensions>
 </idea-plugin>

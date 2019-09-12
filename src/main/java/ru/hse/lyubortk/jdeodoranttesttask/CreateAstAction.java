@@ -5,6 +5,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParseStart;
 import com.github.javaparser.Providers;
 import com.github.javaparser.ast.Node;
+import com.google.common.annotations.VisibleForTesting;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -51,17 +52,6 @@ public class CreateAstAction extends AnAction {
             ParseStart.PACKAGE_DECLARATION
     );
 
-    /*
-     * Registers PasteActionHandlerWithNotifications handler.
-     * Action classes are guaranteed to be loaded into jvm and therefore their static initialization
-     * section could be used to register handlers. (This way of registering handlers in unrelated
-     * classes' static initialization sections may seem strange but still it is presented in the
-     * official Intellij Platform SDK DevGuide).
-     */
-    static {
-        PasteActionHandlerWithNotifications.registerHandler();
-    }
-
     /**
      * Constructs abstract syntax tree from text selected by the primary caret.
      * @param e  Event related to this action
@@ -73,7 +63,11 @@ public class CreateAstAction extends AnAction {
         final Document document = editor.getDocument();
         final Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
 
-        final Node astRootNode = parseJavaCode(document, primaryCaret);
+        final int start = primaryCaret.getSelectionStart();
+        final int end = primaryCaret.getSelectionEnd();
+        final String selectedText = document.getText(new TextRange(start, end));
+
+        final Node astRootNode = parseJavaCode(selectedText);
         if (astRootNode == null) {
             sendNotification(project);
             return;
@@ -100,12 +94,9 @@ public class CreateAstAction extends AnAction {
         );
     }
 
+    @VisibleForTesting
     @Nullable
-    private Node parseJavaCode(Document document, Caret primaryCaret) {
-        final int start = primaryCaret.getSelectionStart();
-        final int end = primaryCaret.getSelectionEnd();
-        final String selectedText = document.getText(new TextRange(start, end));
-
+    static Node parseJavaCode(String selectedText) {
         Node astRootNode = null;
         final JavaParser parser = new JavaParser();
         for (ParseStart<? extends Node> parseStart : PARSE_OPTIONS) {
